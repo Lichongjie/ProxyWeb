@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sql.mapper.MetricInfoMapper">
+    <!-- 自定义返回结果集 -->
+    <resultMap id="MetricInfoMap" type="sql.bean.MetricInfoBean">
+        <id property="mDate" column="date" javaType="java.sql.Date"></id>
+        <id property="mServerId" column="serverId" javaType="int"></id>
+
+        <result property="mUploadSum" column="uploadSum" javaType="int"></result>
+        <result property="mUploadSuccNum" column="uploadSuccNum" javaType="int"></result>
+        <result property="mUploadFailedNum" column="uploadFailedNum" javaType="int"></result>
+
+        <result property="mDownloadSum" column="downloadSum" javaType="int"></result>
+        <result property="mDownloadSuccNum" column="downloadSuccNum" javaType="int"></result>
+        <result property="mDownloadFailNum" column="downloadFailNum" javaType="int"></result>
+
+        <result property="mTranscodeSum" column="trascodeSum" javaType="int"></result>
+        <result property="mTranscodeSuccNum" column="transcodeSuccNum" javaType="int"></result>
+        <result property="mTranscodeFailNum" column="transcodeFailNum" javaType="int"></result>
+
+        <result property="mDayIsArchive" column="dayIsArchive" javaType="boolean"></result>
+
+    </resultMap>
+
+    <resultMap id="MetricInfoMap2" type="sql.bean.MetricSumInfoBean">
+        <result property="mDate" column="date" javaType="java.sql.Date"></result>
+
+        <result property="mUploadSum" column="sum(uploadSum)" javaType="java.math.BigDecimal"></result>
+        <result property="mUploadSuccNum" column="sum(uploadSuccNum)" javaType="java.math.BigDecimal"></result>
+        <result property="mUploadFailedNum" column="sum(uploadFailedNum)" javaType="java.math.BigDecimal"></result>
+
+        <result property="mDownloadSum" column="sum(downloadSum)" javaType="java.math.BigDecimal"></result>
+        <result property="mDownloadSuccNum" column="sum(downloadSuccNum)" javaType="java.math.BigDecimal"></result>
+        <result property="mDownloadFailNum" column="sum(downloadFailNum)" javaType="java.math.BigDecimal"></result>
+
+        <result property="mTranscodeSum" column="sum(trascodeSum)" javaType="java.math.BigDecimal"></result>
+        <result property="mTranscodeSuccNum" column="sum(transcodeSuccNum)" javaType="java.math.BigDecimal"></result>
+        <result property="mTranscodeFailNum" column="sum(transcodeFailNum)" javaType="java.math.BigDecimal"></result>
+
+        <result property="mDayIsArchive" column="isArchive" javaType="java.lang.Long"></result>
+
+    </resultMap>
+    <!-- 在各种标签中的id属性必须和接口中的方法名相同 ， id属性值必须是唯一的，不能够重复使用。parameterType属性指明查询时使用的参数类型，resultType属性指明查询返回的结果集类型-->
+    <!-- useGeneratedKeys：（ 仅 对 insert 有 用 ） 这 会 告 诉 MyBatis 使 用 JDBC 的getGeneratedKeys
+                方法来取出由数据（比如：像 MySQL 和 SQLServer 这样的数据库管理系统的自动递增字段）内部生成的主键。默认值： false。 -->
+    <!--keyProperty： （仅对 insert有用）标记一个属性， MyBatis 会通过 getGeneratedKeys或者通过 insert 语句的 selectKey 子元素设置它的值。默认：不设置。 -->
+    <!--#{}中的内容，为占位符，当参数为某个JavaBean时，表示放置该Bean对象的属性值  -->
+
+
+    <insert id="insertMetricInfo">
+        insert into metricinfo (date,serverId,uploadSum,uploadSuccNum,uploadFailedNum,downloadSum,downloadSuccNum,downloadFailNum,trascodeSum,transcodeSuccNum,transcodeFailNum,dayIsArchive ) values (#{mDate},#{mServerId},#{mUploadSum},#{mUploadSuccNum},#{mUploadFailedNum},#{mDownloadSum},#{mDownloadSuccNum},#{mDownloadFailNum},#{mTranscodeSum},#{mTranscodeSuccNum},#{mTranscodeFailNum},#{mDayIsArchive})
+    </insert>
+
+    <update id="updateMetricInfo" >
+        update metricinfo
+        set date=#{MetricInfoBean.mDate},serverId=#{MetricInfoBean.mServerId},uploadSum=#{MetricInfoBean.mUploadSum},uploadSuccNum=#{MetricInfoBean.mUploadSuccNum},uploadFailedNum=#{MetricInfoBean.mUploadFailedNum},downloadSum=#{MetricInfoBean.mDownloadSum},downloadSuccNum=#{MetricInfoBean.mDownloadSuccNum},downloadFailNum=#{MetricInfoBean.mDownloadFailNum},trascodeSum=#{MetricInfoBean.mTranscodeSum},transcodeSuccNum=#{MetricInfoBean.mTranscodeSuccNum},transcodeFailNum=#{MetricInfoBean.mTranscodeFailNum},dayIsArchive=#{MetricInfoBean.mDayIsArchive}
+        where date=#{date} and serverId=#{serverId}
+    </update>
+
+    <select id="selectMetricInfoByIdAndDate" resultMap="MetricInfoMap">
+        select * from metricinfo m where m.date=#{date} and m.serverId=#{serverId}
+    </select>
+
+    <select id="selectMetricInfoByDate" resultMap="MetricInfoMap2">
+        SET @VAR1=(SELECT sum(dayIsArchive) from metricinfo);
+        SET @VAR2=(SELECT count(dayIsArchive) from metricinfo);
+        SET @isArchive=(SELECT IF(@VAR1=@VAR2,1,0));
+        select sum(uploadSum),sum(uploadSuccNum),sum(uploadFailedNum),sum(downloadSum),sum(downloadSuccNum),sum(downloadFailNum),sum(trascodeSum),sum(transcodeSuccNum),sum(transcodeFailNum), @isArchive as isArchive from metricinfo
+        where date = #{date}
+    </select>
+
+    <select id="selectMetricInfo" resultMap="MetricInfoMap2">
+        SET @isArchive=0;
+        select sum(uploadSum),sum(uploadSuccNum),sum(uploadFailedNum),sum(downloadSum),sum(downloadSuccNum),sum(downloadFailNum),sum(trascodeSum),sum(transcodeSuccNum),sum(transcodeFailNum),@isArchive as isArchive from metricinfo
+    </select>
+
+    <select id="selectHistoryMetricInfo" resultMap="MetricInfoMap2">
+        create view temp
+        as
+        select temp.date, count(temp.dayIsArchive)- 1 as isArchive
+        from (select DISTINCT date, dayIsArchive from metricinfo) as temp
+        GROUP BY date;
+
+        select metricinfo.date, sum(uploadSum) ,sum(uploadSuccNum),sum(uploadFailedNum), sum(downloadSum),
+               sum(downloadSuccNum),sum(downloadFailNum),sum(trascodeSum) ,sum(transcodeSuccNum) ,
+               sum(transcodeFailNum) ,isArchive
+        from metricinfo
+        JOIN temp
+        ON metricinfo.date = temp.date
+        where metricinfo.date between #{begin} and #{end}
+        group by metricinfo.date;
+
+        drop view temp;
+    </select>
+
+</mapper>
