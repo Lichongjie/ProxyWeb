@@ -5,6 +5,8 @@ import sql.mapper.FileInfoMapper;
 import org.apache.ibatis.session.SqlSession;
 
 import java.io.File;
+import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -17,9 +19,9 @@ public class FileInfoSqlService {
 
   private static void insertFileInfo() {
     try {
-      java.util.Date d1 = fileInfoDateFormat.parse("2017-12-2 10:0:0");
-      FileInfoBean info = new FileInfoBean("id1",new Timestamp(d1.getTime()),false,
-          false, "unknown", false);
+      java.util.Date d1 = fileInfoDateFormat.parse("2017-12-3 10:0:0");
+      FileInfoBean info = new FileInfoBean("id3",new Timestamp(d1.getTime()),false,
+          false, "unknown", true, true);
       mapper.insertFileInfo(info);
       session.commit();
     } catch (Exception e) {
@@ -46,18 +48,33 @@ public class FileInfoSqlService {
       return mapper.selectTranscodeFailedFile();
   }
 
-  public static List<FileInfoBean> selectUnArchiveFiles() throws Exception {
-    return mapper.selectUnArchiveFiles();
+  public static List<FileInfoBean> selectUnArchiveFiles(Timestamp begin, Timestamp end) throws Exception {
+
+    return mapper.selectUnArchiveFiles(begin, end);
 
   }
 
+  public static List<FileInfoBean> selectNeedDeleteFiles(Timestamp begin, Timestamp end)
+          throws Exception {
+    return mapper.selectNeedDeleteFiles(begin, end);
+  }
+
+  public static void alterTableName() throws Exception {
+     mapper.alterTableName();
+  }
+  public static List<FileInfoBean> initFileInfo(int topK)
+          throws Exception {
+    return mapper.initFileInfo(topK);
+  }
+
+
   public static void main(String[] args) throws Exception {
-    //FileInfoSqlService.insertFileInfo();
+    FileInfoSqlService.insertFileInfo();
     //java.util.Date d1 = fileInfoDateFormat.parse("2017-12-2 22:0:0");
     //FileInfoBean info = new FileInfoBean("id1",new Date(d1.getTime()),false,
    //         false, "unknown", false);
    // FileInfoSqlService.updateFileInfo(info, "id1");
-    System.out.print(selectUnArchiveFiles().toString());
+    //System.out.print(selectUnArchiveFiles().toString());
 
   }
 }

@@ -93,4 +93,24 @@
         drop view temp;
     </select>
 
+    <select id="initHistoryInfo" resultMap="MetricInfoMap2">
+        create view temp
+        as
+        select temp.date, count(temp.dayIsArchive)- 1 as isArchive
+        from (select DISTINCT date, dayIsArchive from metricinfo) as temp
+        GROUP BY date;
+
+        select metricinfo.date, sum(uploadSum) ,sum(uploadSuccNum),sum(uploadFailedNum), sum(downloadSum),
+        sum(downloadSuccNum),sum(downloadFailNum),sum(trascodeSum) ,sum(transcodeSuccNum) ,
+        sum(transcodeFailNum) ,isArchive
+        from metricinfo
+        JOIN temp
+        ON metricinfo.date = temp.date
+        group by metricinfo.date
+        order by metricinfo.date desc
+        limit 0,#{topK};
+
+        drop view temp;
+    </select>
+
 </mapper>

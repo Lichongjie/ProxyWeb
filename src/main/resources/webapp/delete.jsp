@@ -1,10 +1,10 @@
 <head>
 	<meta charset="utf-8">
 	<title>Proxy Web</title>
-
+	
 	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<script src="js/jquery.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
+		<script src="js/jquery.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
 
 	<script src="js/jquery.form.min.js"></script>
 
@@ -55,7 +55,7 @@
 
 		$(function() {
 			function initTableCheckbox() {
-				var $thr = $('#archive-info thead tr');
+				var $thr = $('#delete-info thead tr');
 				var $checkAllTh = $('<th><input type="checkbox" id="checkAll" name="checkAll" /></th>');
 				/*将全选/反选复选框添加到表头最前，即增加一列*/
 				$thr.prepend($checkAllTh);
@@ -77,7 +77,7 @@
 				$thr.click(function() {
 					$(this).find('input').click();
 				});
-				var $tbr = $('#archive-info tbody tr');
+				var $tbr = $('table tbody tr');
 				var $checkItemTd = $('<td><input type="checkbox" name="checkItem" /></td>');
 				/*每一行都在最前面插入一个选中复选框的单元格*/
 				$tbr.prepend($checkItemTd);
@@ -100,8 +100,29 @@
 			//initTableCheckbox();
 
 			$("#myButton5").click(function() {
+                alert("确定要删除吗?");
+				alert("删除成功");
+			});
+			
+			$("#myButton5").click(function() {
+				var selectedData = "";
+				$(":checkbox:checked", "#info-body").each(function() {
+					var tablerow = $(this).parent().parent();
 
-				alert("归档成功");
+					var fileId = tablerow.find("[name='fileId']").html().valueOf();
+					selectedData = selectedData  + fileId + ";";
+				});
+
+				$.ajax({
+					type: "POST",
+					url: "rest/archive",
+					data: selectedData,
+					async: false,
+					success: function(data) {
+						alert("成功");
+					}
+				});
+
 			});
 
 			var options = {
@@ -111,8 +132,8 @@
 				error: showError,
 				//另外的一些属性: 
 				type: "POST",
-				url: "rest/archiveQuery",
-				data: $('#archive-query').serialize(),
+				url: "rest/deleteQuery",
+				data: $('#delete-query').serialize(),
 				async: false, // 默认是form的action，如果写的话，会覆盖from的action.
 				//type:              // 默认是form的method，如果写的话，会覆盖from的method.('get' or 'post').
 				//dataType:  null        // 'xml', 'script', or 'json' (接受服务端返回的类型.) 
@@ -123,7 +144,7 @@
 				//timeout:   3000 
 			};
 
-			$('#archive-query').submit(function() {
+			$('#delete-query').submit(function() {
 				$(this).ajaxSubmit(options);
 				return false; //来阻止浏览器提交.
 			});
@@ -137,8 +158,9 @@
 			}
 
 			function showResponse(data, statusText) {
-				var tableStr = "<table class='table table-striped' id='archive-info' name='archive-info'><caption>未归档数据</caption>";
-				tableStr = tableStr + "<thead id='archive-info-head'><tr class='danger'><th>文件ID</th><th>上传时间</th><th>是否转码</th><th>转码是否成功</th><th>转码格式</th><th>是否归档</th><th>是否删除</th></tr></thead>";
+				alert("查询成功");
+				var tableStr = "<table class='table table-striped' id='delete-info' name='delete-info'><caption>未归档数据</caption>";
+				tableStr = tableStr + "<thead><tr class='danger'><th>文件ID</th><th>上传时间</th><th>是否转码</th><th>转码是否成功</th><th>转码格式</th><th>是否归档</th><th>是否删除</th></tr></thead>"
 				tableStr = tableStr + "<tbody id='info-body'>";
 				for(var i = 0; i < data.root.length; i++) {
 					if(i % 2 == 0) {
@@ -147,7 +169,7 @@
 						tableStr = tableStr + "<tr>";
 					}
 					tableStr = tableStr +
-						"<td name='fileId'>" + data.root[i].fileId + "</td>" +
+						"<td >" + data.root[i].fileId + "</td>" +
 						"<td>" + data.root[i].uploadDate + "</td>" +
 						"<td>" + data.root[i].toTranscode + "</td>" +
 						"<td>" + data.root[i].transcode + "</td>" +
@@ -157,34 +179,11 @@
 
 				}
 				tableStr = tableStr + "</tbody></table>";
-				$("#archive-info").html(tableStr);
+				$("#delete-info").html(tableStr);
 				initTableCheckbox();
-				alert("查询成功");
 				//$("#sub").html("<button type='submit' class='btn btn-default' disable='false'>查询</button>");
+
 			}
-
-			$("#myButton5").click(function() {
-				var selectedData = "";
-				$(":checkbox:checked", "#info-body").each(function() {
-					var tablerow = $(this).parent().parent();
-
-					var fileId = tablerow.find("[name='fileId']").html().valueOf();
-					var format = tablerow.find("[name='format']").html().valueOf();
-
-					selectedData = selectedData + fileId + ":" + format + ";";
-				});
-
-				$.ajax({
-					type: "POST",
-					url: "rest/reTranscode",
-					data: selectedData,
-					async: false,
-					success: function(data) {
-						alert("成功");
-					}
-				});
-
-			});
 
 		});
 	</script>
@@ -210,26 +209,29 @@
 		<li>
 			<a href="download.jsp" style="color:#FF6347">文件管理</a>
 		</li>
-		<li class="active">
-			<a href="archive.jsp" style="color:#FF6347"><strong>归档</strong></a>
-		</li>
 		<li>
-			<a href="delete.jsp" style="color:#FF6347">删除</a>
+			<a href="archive.jsp" style="color:#FF6347">归档</a>
 		</li>
-		<p class="text-right" style="font-family:'sans-serif';color:#FF6347;font-size:20px;margin-top: 8px;margin-bottom: 2px;margin-right: 30px;">
-			<strong>HTSC Proxy Web</strong>
-		</p>
+		<li class="active">
+			<a href="delete.jsp" style="color:#FF6347"><strong>删除</strong></a>
+		</li>
+		 <p class="text-right" style="font-family:'sans-serif';color:#FF6347;font-size:20px;margin-top: 8px;margin-bottom: 2px;margin-right: 30px;">
+		 	<strong>HTSC Proxy Web</strong>
+		 </p>
 	</ul>
 </head>
 
 <body>
+	
+   
+
 
 	<div class="panel panel-danger panel1" style="width: 1200px;">
 		<div class="panel-heading">
-			<h3 class="panel-title">面板标题</h3>
+			<h3 class="panel-title">删除</h3>
 		</div>
 		<div class="panel-body">
-			<form class="form-inline" role="form" style="text-align:center;width:1100px;" id="archive-query">
+			<form class="form-inline" role="form" style="text-align:center;width:1100px;" id="delete-query">
 				<div class="form-group">
 					<label class="col-sm-2 control-label" style="float: left; width: 120px;height: 20px; font-size:20px">开始日期</label>
 					<a class='input-group date' id='datetimepicker1'>
@@ -255,32 +257,38 @@
 
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">
-						<button type="submit" class="btn btn-danger">获取未归档文件</button>
+						<button type="submit" class="btn btn-danger">获取已归档文件</button>
 					</div>
 				</div>
+				
 
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">
-						<button type="button" class="btn btn-danger" id="myButton5">归档选中文件</button>
+						<button type="button" class="btn btn-danger" id="myButton5">删除选中文件</button>
 					</div>
 				</div>
-			</form>
-			<table class="table table-striped" style="width: 1150px" id="archive-info">
-				<caption>未归档数据</caption>
-				<thead>
+				
+				</form>
+
+				<table class="table table-striped" style="width: 1150px;" id="delete-info">
+					<caption>已归档文件</caption>
+					<thead>
 					<tr class='danger'>
 						<th><input type="checkbox" id="checkAll" name="checkAll" /></th>
 						<th>文件ID</th>
 						<th>上传时间</th>
 						<th>是否转码</th>
 						<th>转码是否成功</th>
-						<th>转码格式</th>
 						<th>是否归档</th>
 						<th>是否删除</th>
-					</tr>
-				</thead>
+						</tr>
 
-			</table>
+					</thead>
+					<tbody>
+						
+					</tbody>
+			
+				</table>
 
 		</div>
 	</div>

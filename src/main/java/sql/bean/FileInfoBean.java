@@ -15,15 +15,16 @@ public class FileInfoBean implements Serializable {
   private boolean mIsTranscode;
   private String mTranscodeFormat;
   private boolean mIsArchive;
+  private boolean mIsMove;
 
   public FileInfoBean(String fileId, Timestamp uploadDate, int toTranscode, int isTranscode,
-      String transcodeFormat, int isArchive) {
+      String transcodeFormat, int isArchive, int isMove) {
     this(fileId, uploadDate, toTranscode > 0, isTranscode > 0,
-        transcodeFormat, isArchive > 0);
+        transcodeFormat, isArchive > 0, isMove > 0);
   }
 
   public FileInfoBean(String fileId, Timestamp uploadDate, boolean toTranscode, boolean isTranscode,
-      String transcodeFormat, boolean isArchive){
+      String transcodeFormat, boolean isArchive, boolean isMove){
     super();
     mFileId = fileId;
     mUploadDate = uploadDate;
@@ -31,17 +32,19 @@ public class FileInfoBean implements Serializable {
     mIsTranscode = isTranscode;
     mTranscodeFormat = transcodeFormat;
     mIsArchive = isArchive;
+    mIsMove = isMove;
   }
 
   @Override
   public String toString() {
     return "FileInfoBean{" +
-            "mFileId='" + mFileId + '\'' +
-            ", mUploadDate=" + mUploadDate +
+            "mUploadDate=" + mUploadDate +
+            ", mFileId='" + mFileId + '\'' +
             ", mToTranscode=" + mToTranscode +
             ", mIsTranscode=" + mIsTranscode +
             ", mTranscodeFormat='" + mTranscodeFormat + '\'' +
             ", mIsArchive=" + mIsArchive +
+            ", mIsMove=" + mIsMove +
             '}';
   }
 
@@ -92,6 +95,14 @@ public class FileInfoBean implements Serializable {
 
   public boolean isArchive() {
     return mIsArchive;
+  }
+
+  public boolean isMove() {
+    return mIsMove;
+  }
+
+  public void setIsMove(boolean mIsMove) {
+    this.mIsMove = mIsMove;
   }
 
   public void setIsArchive(boolean mIsArchive) {

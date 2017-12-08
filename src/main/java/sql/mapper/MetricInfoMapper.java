@@ -24,4 +24,6 @@ public interface MetricInfoMapper {
   public List<MetricSumInfoBean> selectHistoryMetricInfo(@Param("begin")Date beginDate,
       @Param("end")Date endDate) throws Exception;
 
+  public List<MetricSumInfoBean> initHistoryInfo(@Param("topK")int topK) throws Exception;
+
 }

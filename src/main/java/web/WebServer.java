@@ -11,14 +11,8 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.component.AbstractLifeCycle;
-import org.glassfish.jersey.jetty.JettyHttpContainer;
-import org.glassfish.jersey.jetty.JettyHttpContainerFactory;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.server.ContainerFactory;
-import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import javax.ws.rs.core.UriBuilder;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,8 +20,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.HashMap;
-import java.util.Map;
 
 public class WebServer {
   private Server mServer;
@@ -36,8 +28,6 @@ public class WebServer {
   private final int mPort;
   private ServletContextHandler mServletContextHandler;
   private static final String WEBROOT_INDEX = "/webapp/";
-
-
 
   public WebServer(String host, int port) {
     mHost = host;
@@ -66,10 +56,10 @@ public class WebServer {
 
   public void addRestHandlerServlet() {
     ServletContainer servlet = new ServletContainer(new ProxyResourceConfig());
+
     ServletHolder sh = new ServletHolder(servlet);
     mServletContextHandler.addServlet(sh, "/rest/*");
   }
-
 
   private ServletContextHandler getServletContextHandler(URI baseUri, File scratchDir) {
     ServletContextHandler sch = new ServletContextHandler(ServletContextHandler.SESSIONS);

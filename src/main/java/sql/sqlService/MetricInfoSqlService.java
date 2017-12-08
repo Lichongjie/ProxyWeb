@@ -17,7 +17,7 @@ public class MetricInfoSqlService {
 
   private static void insertMetricInfo() {
     try {
-      java.util.Date d1 = MetricInfoDateFormat.parse("2017-12-04");
+      java.util.Date d1 = MetricInfoDateFormat.parse("2017-11-10");
       MetricInfoBean info = new MetricInfoBean(new Date(d1.getTime()),2,1,
               1,4,4,1,
               2,55,1,1,
@@ -64,14 +64,19 @@ public class MetricInfoSqlService {
 
   }
 
+  public static List<MetricSumInfoBean> initHistoryInfo(int topK) throws Exception {
+    return mapper.initHistoryInfo(topK);
+
+  }
+
 
 
   public static void main(String []args) throws Exception {
-
-    java.util.Date begin = MetricInfoSqlService.MetricInfoDateFormat.parse("2017-12-01");
-    java.util.Date end = MetricInfoSqlService.MetricInfoDateFormat.parse("2017-12-05");
-    Date temp = new Date(begin.getTime());
-    System.out.print(temp.getTime());
+   System.out.print(initHistoryInfo(10).toString());
+   // java.util.Date begin = MetricInfoSqlService.MetricInfoDateFormat.parse("2017-12-01");
+  //  java.util.Date end = MetricInfoSqlService.MetricInfoDateFormat.parse("2017-12-05");
+  //  Date temp = new Date(begin.getTime());
+  //  System.out.print(temp.getTime());
    // updateMetricInfo(info, new Date(d1.getTime()), 1);
     //MetricInfoSqlService.insertMetricInfo();
     //System.out.print(selectMetricInfoByIdAndDate(new Date(d1.getTime()),1));
