@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE com.htsc.alluxioproxy.sql.mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-com.htsc.alluxioproxy.sql.mapper.dtd">
+<com.htsc.alluxioproxy.sql.mapper namespace="com.htsc.alluxioproxy.webserver.sql.com.htsc.alluxioproxy.sql.mapper.UserMapper">
+    <!-- 自定义返回结果集 -->
+    <resultMap id="UserMap" type="com.htsc.alluxioproxy.webserver.sql.com.htsc.alluxioproxy.sql.bean.UserBean">
+        <id property="mId" column="id" javaType="int"></id>
+        <result property="mUserName" column="userName" javaType="java.lang.String"></result>
+        <result property="mPassword" column="password" javaType="java.lang.String"></result>
+    </resultMap>
+
+    <update id="createNewTable" >
+        create table user(
+          userName VARCHAR(255),
+          password VARCHAR(255)
+        );
+    </update>
+
+    <insert id="insertUser">
+        insert into user (userName,password)
+        values (#{userName},#{password})
+    </insert>
+
+    <select id="getUser" parameterType="java.lang.String" resultType="com.htsc.alluxioproxy.webserver.sql.com.htsc.alluxioproxy.sql.bean.UserBean">
+        select * from user where userName=#{userName}
+    </select>
+</com.htsc.alluxioproxy.sql.mapper>

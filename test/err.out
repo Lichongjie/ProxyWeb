@@ -1,0 +1,6 @@
+Exception in thread "main" java.lang.Exception: Proxy internal error Failed to connect to FileSystemMasterClient master @ localhost/127.0.0.1:19998 after 29 attempts
+	at com.htsc.alluxioproxy.Uploader.upload(Uploader.java:60)
+	at com.htsc.alluxioproxy.FileTest.main(FileTest.java:32)
+Exception in thread "main" java.lang.Exception: Proxy internal error Failed to connect to FileSystemMasterClient master @ localhost/127.0.0.1:19998 after 29 attempts
+	at com.htsc.alluxioproxy.Uploader.upload(Uploader.java:60)
+	at com.htsc.alluxioproxy.FileTest.main(FileTest.java:32)

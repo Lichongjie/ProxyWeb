@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<users>
+  <user>
+    <id>1</id>
+    <name>alluxio</name>
+    <password>alluxio</password>
+    <primary-group>alluxio</primary-group>
+    <groups>admin,test</groups>
+  </user>
+  <user>
+    <id>2</id>
+    <name>test</name>
+    <password>test</password>
+    <primary-group>test</primary-group>
+    <groups></groups>
+  </user>
+    <user>
+        <id>3</id>
+        <name>webUser</name>
+        <password>alluxio</password>
+        <primary-group>alluxio</primary-group>
+        <groups></groups>
+    </user>
+</users>
