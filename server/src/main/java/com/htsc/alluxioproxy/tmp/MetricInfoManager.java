@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -149,7 +150,7 @@ public class MetricInfoManager {
 
           // update last time internal's info
           if (IS_CHANGE.get()) {
-            IS_ARCHIVE = FileInfoSqlDatabaseService.dayIsUnarchived(day);
+						IS_ARCHIVE = FileInfoSqlDatabaseService.dayIsUnarchived(day);
             MetricInfoSqlService.updateMetricInfo(generateBean());
             IS_CHANGE.getAndSet(false);
           }

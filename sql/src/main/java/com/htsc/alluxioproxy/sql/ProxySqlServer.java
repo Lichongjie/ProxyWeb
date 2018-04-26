@@ -1,5 +1,6 @@
 package com.htsc.alluxioproxy.sql;
 
+import com.htsc.alluxioproxy.sql.service.SqlTools;
 import com.htsc.alluxioproxy.sql.tmp.SqlManager;
 import com.htsc.alluxioproxy.sql.util.Configuration;
 
@@ -16,7 +17,6 @@ public class ProxySqlServer {
 
   public static void main(String[] args) throws Exception {
     try {
-      SqlTools.init();
       SqlManager.INSTANCE.createTable();
       SqlManager.INSTANCE.start();
       LOG.info("proxy sql server started on {}", getBaseURI());

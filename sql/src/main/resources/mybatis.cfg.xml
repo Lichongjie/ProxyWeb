@@ -12,7 +12,7 @@
 
     <!-- 为JAVA Bean起类别名 -->
     <typeAliases >
-             <package name="com.htsc.alluxioproxy.sql.com.htsc.alluxioproxy.sql.bean"/>
+             <package name="com.htsc.alluxioproxy.sql.bean"/>
     </typeAliases>
 
     <!-- 配置mybatis运行环境 -->
@@ -35,7 +35,8 @@
     </environments>
 
     <mappers>
-        <package name="com.htsc.alluxioproxy.sql.com.htsc.alluxioproxy.sql.mapper"/>
+        <mapper class="com.htsc.alluxioproxy.sql.mapper.MetricInfoMapper"/>
+        <mapper class="com.htsc.alluxioproxy.sql.mapper.FileInfoMapper"/>
     </mappers>
 
 </configuration>

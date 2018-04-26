@@ -3,6 +3,7 @@ package com.htsc.alluxioproxy.tmp;
 import com.google.common.base.Preconditions;
 import com.htsc.alluxioproxy.ServerContext;
 
+import com.htsc.alluxioproxy.sql.SqlTmp;
 import com.htsc.alluxioproxy.sql.util.Configuration;
 import com.htsc.alluxioproxy.sql.util.PathUtils;
 import com.htsc.alluxioproxy.util.Constants;

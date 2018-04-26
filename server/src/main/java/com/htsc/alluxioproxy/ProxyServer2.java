@@ -1,5 +1,6 @@
 package com.htsc.alluxioproxy;
 
+import com.htsc.alluxioproxy.sql.service.FileInfoSqlDatabaseService;
 import com.htsc.alluxioproxy.sql.util.Configuration;
 import com.htsc.alluxioproxy.sql.util.PathUtils;
 import com.htsc.alluxioproxy.tmp.MetricInfoManager;
@@ -53,7 +54,7 @@ public final class ProxyServer2 {
    * @throws Exception if any error occurs
    */
   public static void main(String[] args) throws Exception {
-    ResourceConfig rc;
+		ResourceConfig rc;
     HttpServer grizzlyServer;
     try {
       rc = new ResourceConfig()

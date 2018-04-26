@@ -149,7 +149,7 @@
     </dependency>
     <dependency>
       <groupId>com.htsc.alluxioproxy</groupId>
-      <artifactId>sqlCommon</artifactId>
+      <artifactId>sql</artifactId>
       <version>0.0.3</version>
     </dependency>
       <dependency>

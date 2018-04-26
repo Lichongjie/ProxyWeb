@@ -95,7 +95,7 @@ public class WebResource {
   private UserSessionManager getUserManager(HttpServletRequest request) {
     String addr = getUserKey(request);
     if(!userMap.containsKey(addr)) {
-      userMap.put(addr, new UserSessionManager());
+     userMap.put(addr, new UserSessionManager());
     }
     return userMap.get(addr);
   }
@@ -991,6 +991,31 @@ public class WebResource {
       return generateErrorResponse(e);
     }
   }
+
+  private class loginCheckThread implements Runnable {
+  	@Override
+		public void run() {
+  		while (true) {
+  			try {
+  				List<String> needDelete = new ArrayList<>();
+  				for(Map.Entry entry : userMap.entrySet()) {
+  					UserSessionManager manager = (UserSessionManager)entry.getValue();
+  					if(manager.loginTimeOutCheck()) {
+  						needDelete.add((String)entry.getKey());
+						}
+					}
+					for(String key : needDelete) {
+						userMap.remove(key);
+					}
+
+  				Thread.sleep(5000);
+				} catch (InterruptedException e) {
+  				LOG.error("login check thread was interrupted");
+  				throw new RuntimeException();
+				}
+			}
+		}
+	}
 
 
   private JSONObject generateJsonResult(Collection<?> l) {

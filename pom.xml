@@ -15,7 +15,6 @@
     <module>gateway</module>
     <module>proxyweb</module>
     <module>sql</module>
-    <module>sqlCommon</module>
   </modules>
 
   <properties>

@@ -1,6 +1,5 @@
 package com.htsc.alluxioproxy.sql.tmp;
 
-import   com.google.common.base.Preconditions;
 import com.htsc.alluxioproxy.sql.SqlTmp;
 import com.htsc.alluxioproxy.sql.service.DataBaseException;
 import com.htsc.alluxioproxy.sql.service.DatabaseService;
@@ -56,7 +55,7 @@ public enum SqlManager {
         try {
           executeSql();
         } catch (Exception e) {
-          LOG.error("sql.sql exec failed");
+          LOG.error("sql exec failed");
           e.printStackTrace();
         }  finally {
           try {
@@ -127,7 +126,7 @@ public enum SqlManager {
     }
   }
 
-  private void backupFileCheck(String filePath) throws Exception{
+  private boolean backupFileCheck(String filePath) throws Exception{
 		File backUpFile = new File(filePath);
 		if(!backUpFile.exists() || backUpFile.length() == 0) {
 			mIsRecover = false;
@@ -135,7 +134,7 @@ public enum SqlManager {
 				getServerId());
 			mTmpFile = new File(tmpPath);
 			if(!mTmpFile.exists() || mTmpFile.length() == 0 ){
-				return;
+				return true;
 			}
 			synchronized (TMP_LOCK) {
 				wrongFileLengthCheck(backUpFile);
@@ -144,21 +143,24 @@ public enum SqlManager {
 					throw new RuntimeException();
 				}
 			}
-			LOG.info("execute sql.sql, create tmp file {} ", backUpFile.getName());
+			LOG.info("execute sql, create tmp file {} ", backUpFile.getName());
 		} else {
 			if(mIsRecover) {
-				LOG.info("recover sql.sql from server shut down");
+				LOG.info("recover sql from server shut down");
 				mIsRecover = false;
 			} else {
-				LOG.info("recover sql.sql from sql.sql exec failed");
+				LOG.info("recover sql from sql.sql exec failed");
 			}
 		}
+		return false;
 	}
 
 	private void executeSql0(InputStream mTmpFileInputStream) throws Exception {
 		SqlTmp info;
 		ObjectInputStream ois = new ObjectInputStream(mTmpFileInputStream);
+		LOG.info("test2");
 		info = (SqlTmp) ois.readObject();
+		LOG.info("test3");
 		String operation = info.getOperationName();
 		String serviceName = info.getServiceName();
 		Serializable bean = info.getBean();
@@ -176,7 +178,7 @@ public enum SqlManager {
 	}
 
   /**
-   *  execute the sql.sql operation in the tmp file.
+   *  execute the sql operation in the tmp file.
    *
    * @throws Exception if error happened when executing sql.sql operation or reading tmp file
    */
@@ -184,14 +186,18 @@ public enum SqlManager {
   private void executeSql() throws Exception {
     String filePath = PathUtils.concatPath(DATABASE_BACKUP_DIR, TMP_FILE_NAME+
         getServerId()+".backup");
-		backupFileCheck(filePath);
+		if(backupFileCheck(filePath)) {
+			return;
+		}
 		boolean isCommited = false;
 		File sqlFile = new File(filePath);
     openDatabaseSession();
     InputStream mTmpFileInputStream = read(sqlFile);
     try {
       while(mTmpFileInputStream.available() > 0) {
+      	LOG.info("test1");
 				executeSql0(mTmpFileInputStream);
+				LOG.info("test2");
       }
       DatabaseService.commit();
       isCommited = true;
@@ -201,7 +207,7 @@ public enum SqlManager {
         sqlFile.delete();
         Thread.sleep(1);
       }
-      LOG.info("execute sql.sql finished, delete tmp file {} ", sqlFile.getName());
+      LOG.info("execute sql finished, delete tmp file {} ", sqlFile.getName());
     } catch (Throwable e) {
       if(e instanceof DataBaseException) {
         LOG.error("sql.sql execute failed, reason {}", e.getMessage());

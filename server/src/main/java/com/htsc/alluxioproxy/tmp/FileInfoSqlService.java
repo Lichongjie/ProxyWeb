@@ -1,6 +1,7 @@
 package com.htsc.alluxioproxy.tmp;
 
 import com.google.common.base.Preconditions;
+import com.htsc.alluxioproxy.sql.SqlTmp;
 import com.htsc.alluxioproxy.sql.bean.FileInfoBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
