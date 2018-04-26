@@ -1,4 +1,4 @@
-# Unify Storage Proxy Server
+# Unified Storage Proxy Server
 
 ## How to generate HTTPS certificates
 
