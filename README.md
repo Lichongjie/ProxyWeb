@@ -1,4 +1,4 @@
-# Huatai Alluxio Proxy Server
+# Unify Storage Proxy Server
 
 ## How to generate HTTPS certificates
 
